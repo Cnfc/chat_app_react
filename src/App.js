@@ -1,6 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
+import firebase from "firebase";
+import "firebase/firestore";
+
+const config = {
+  apiKey: "AIzaSyBENgtk7smdOP5xD8Xzl8fjdyaHJ0faARk",
+  authDomain: "chat-app-131313.firebaseapp.com",
+  databaseURL: "https://chat-app-131313.firebaseio.com",
+  projectId: "chat-app-131313",
+  storageBucket: "chat-app-131313.appspot.com",
+  messagingSenderId: "318439760953",
+  appId: "1:318439760953:web:329a55f0b22624ee"
+};
+firebase.initializeApp(config);
+const db = firebase.firestore();
 
 function App() {
+  const [channels, setChannels] = useState([]);
+
+  useEffect(() => {
+    return db.collection("channels").onSnapshot(snapshot => {
+      const docs = [];
+      snapshot.forEach(doc => {
+        docs.push({
+          ...doc.data(),
+          id: doc.id
+        });
+      });
+      setChannels(docs);
+    });
+  }, []);
+
   return (
     <div className="App">
       <div className="Nav">
@@ -11,17 +40,18 @@ function App() {
             src="https://placekitten.com/64/64"
           />
           <div>
-            <div>Ryan Peterson Florence</div>
+            <div>Stanislav Dashkov </div>
             <div>
               <button className="text-button">log out</button>
             </div>
           </div>
         </div>
         <nav className="ChannelNav">
-          <a href="/channel/awesome"># awesome</a>
-          <a className="active" href="/channel/general">
-            # general
-          </a>
+          {channels.map(channel => (
+            <a key={channel.id} href={`/channel/${channel.id}`}>
+              # {channel.id}
+            </a>
+          ))}
         </nav>
       </div>
       <div className="Channel">
