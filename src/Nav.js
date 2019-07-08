@@ -5,7 +5,6 @@ import useCollection from "./useCollection";
 
 function Nav({ user }) {
   const channels = useCollection("channels");
-  const messages = useCollection("channels/general/messages");
 
   return (
     <div className="Nav">

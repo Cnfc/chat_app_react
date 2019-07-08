@@ -5,13 +5,13 @@ import Messages from "./Message";
 import ChatInputBox from "./ChatInputBox";
 import Members from "./Members";
 
-function Channel() {
+function Channel({ user }) {
   return (
     <div className="Channel">
       <div className="ChannelMain">
         <ChanelInfo />
-        <Messages />
-        <ChatInputBox />
+        <Messages user={user} />
+        <ChatInputBox user={user} />
       </div>
       <Members />
     </div>
