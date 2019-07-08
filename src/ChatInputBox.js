@@ -9,7 +9,7 @@ function ChatInputBox() {
         const value = event.target.elements[0].value;
         db.collection("channels/random/messages").add({
           text: value,
-          createApp: new Date()
+          createdAt: new Date()
         });
         event.target.reset();
       }}
