@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
-import { db } from "./firebase";
 import Nav from "./Nav";
 import Channel from "./Channel";
 
