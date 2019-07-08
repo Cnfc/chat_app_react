@@ -3,8 +3,8 @@ import { db } from "./firebase";
 
 import useCollection from "./useCollection";
 
-function Messages() {
-  const messages = useCollection("channels/random/messages", "createdAt");
+function Messages({ channelId }) {
+  const messages = useCollection(`channels/${channelId}/messages`, "createdAt");
 
   return (
     <div className="Messages">
