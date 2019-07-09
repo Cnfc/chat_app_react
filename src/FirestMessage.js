@@ -14,7 +14,7 @@ function FirstMessage() {
         <div className="Avatar" />
         <div className="Author">
           <div>
-            <span className="UserName">{user.name} </span>
+            <span className="UserName">Name </span>
             <span className="TimeStamp">3:37 PM</span>
           </div>
           <div className="MessageContent">{message.text}</div>

@@ -4,6 +4,7 @@ import { db } from "./firebase";
 import useCollection from "./useCollection";
 
 function Messages({ channelId }) {
+  console.log(channelId);
   const messages = useCollection(`channels/${channelId}/messages`, "createdAt");
 
   return (
@@ -16,7 +17,11 @@ function Messages({ channelId }) {
         const showAvatar = !previous || message.user.id !== previous.user.id;
 
         return showAvatar ? (
-          <FirstMessageFromUser message={message} showDay={showDay} />
+          <FirstMessageFromUser
+            message={message}
+            showDay={showDay}
+            key={message.id}
+          />
         ) : (
           <div key={message.id}>
             <div className="Message no-avatar">
@@ -31,14 +36,24 @@ function Messages({ channelId }) {
 
 function useDoc(path) {
   const [doc, setDoc] = useState();
+
   useEffect(() => {
-    db.doc(path).onSnapshot(doc => {
-      setDoc({
-        ...doc.data(),
-        id: doc.id
+    let stillMounted = true;
+    return db
+      .doc(path)
+      .get()
+      .then(doc => {
+        if (stillMounted) {
+          setDoc({
+            ...doc.data(),
+            id: doc.id
+          });
+        }
       });
-    });
-  });
+    return () => {
+      stillMounted = false;
+    };
+  }, [path]);
   return doc;
 }
 
