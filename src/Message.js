@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 import useDocWithCache from "./useDocWithCache";
 import useCollection from "./useCollection";
 import formatDate from "date-fns/format";
 import isSameDay from "date-fns/is_same_day";
+
+function useChatScroll(ref) {
+  useEffect(() => {
+    const node = ref.current;
+    node.scrollTop = node.scrollHeight;
+  });
+}
 
 function shouldShowDay(previous, message) {
   const isFirst = !previous;
@@ -38,11 +45,14 @@ function shouldShowAvatar(previous, message) {
 }
 
 function Messages({ channelId }) {
-  console.log(channelId);
   const messages = useCollection(`channels/${channelId}/messages`, "createdAt");
 
+  // Scroll to the last message length
+  const scrollerRef = useRef();
+  useChatScroll(scrollerRef);
+
   return (
-    <div className="Messages">
+    <div ref={scrollerRef} className="Messages">
       <div className="EndOfMessages">That's every message!</div>
 
       {messages.map((message, index) => {

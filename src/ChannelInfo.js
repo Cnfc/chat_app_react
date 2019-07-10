@@ -10,7 +10,7 @@ function ChannelInfo({ channelId }) {
         Topic:{" "}
         <input className="TopicInput" defaultValue={channel && channel.topic} />
       </div>
-      <div className="ChannelName"># {channelId}</div>
+      <div className="ChannelName">#{channelId}</div>
     </div>
   );
 }
