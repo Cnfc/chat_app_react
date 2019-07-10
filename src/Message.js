@@ -1,7 +1,26 @@
-import React, { useState, useEffect } from "react";
-import { db } from "./firebase";
+import React from "react";
 
+import useDocWithCache from "./useDocWithCache";
 import useCollection from "./useCollection";
+import formatDate from "date-fns/format";
+
+function shouldShowAvatar(previous, message) {
+  const isFirst = !previous;
+  if (isFirst) {
+    return true;
+  }
+
+  const differentUser = message.user.id !== previous.user.id;
+  if (differentUser) {
+    return true;
+  }
+
+  // If longer than 3min Show new
+  const hasBeenAWhile =
+    message.createdAt.seconds - previous.createdAt.seconds > 180;
+
+  return hasBeenAWhile;
+}
 
 function Messages({ channelId }) {
   console.log(channelId);
@@ -14,7 +33,7 @@ function Messages({ channelId }) {
       {messages.map((message, index) => {
         const previous = messages[index - 1];
         const showDay = false;
-        const showAvatar = !previous || message.user.id !== previous.user.id;
+        const showAvatar = shouldShowAvatar(previous, message);
 
         return showAvatar ? (
           <FirstMessageFromUser
@@ -34,43 +53,8 @@ function Messages({ channelId }) {
   );
 }
 
-const cache = {};
-const pendingCache = {};
-
-function useDoc(path) {
-  const [doc, setDoc] = useState(cache[path]);
-
-  useEffect(() => {
-    if (doc) {
-      return;
-    }
-
-    let stillMounted = true;
-
-    const pending = pendingCache[path];
-
-    const promise = pending || (pendingCache[path] = db.doc(path).get());
-
-    promise.then(doc => {
-      if (stillMounted) {
-        const user = {
-          ...doc.data(),
-          id: doc.id
-        };
-        setDoc(user);
-        cache[path] = user;
-      }
-    });
-
-    return () => {
-      stillMounted = false;
-    };
-  }, [doc, path]);
-  return doc;
-}
-
 function FirstMessageFromUser({ message, showDay }) {
-  const author = useDoc(message.user.path);
+  const author = useDocWithCache(message.user.path);
 
   return (
     <div key={message.id}>
@@ -89,7 +73,9 @@ function FirstMessageFromUser({ message, showDay }) {
         <div className="Author">
           <div>
             <span className="UserName">{author && author.displayName}</span>{" "}
-            <span className="TimeStamp">3:37 PM</span>
+            <span className="TimeStamp">
+              {formatDate(message.createdAt.seconds * 1000, "dd h:mm a")}
+            </span>
           </div>
           <div className="MessageContent">{message.text}</div>
         </div>
