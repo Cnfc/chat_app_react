@@ -1,5 +1,6 @@
 import React from "react";
 import useDoc from "./useDoc";
+import HiddenNav from "./HiddenNav";
 
 function ChannelInfo({ channelId }) {
   const channel = useDoc(`channels/${channelId}`);
@@ -11,6 +12,7 @@ function ChannelInfo({ channelId }) {
         <input className="TopicInput" defaultValue={channel && channel.topic} />
       </div>
       <div className="ChannelName">#{channelId}</div>
+      <HiddenNav />
     </div>
   );
 }

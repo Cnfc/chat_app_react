@@ -223,3 +223,19 @@ body {
   text-align: center;
   margin-top: 100px;
 }
+
+.HiddenNav {
+  display: none;
+}
+@media only screen and (max-device-width: 480px) {
+  .Nav {
+    display: none;
+  }
+  .Members {
+    display: none;
+  }
+
+  .HiddenNav {
+    display: block;
+  }
+}

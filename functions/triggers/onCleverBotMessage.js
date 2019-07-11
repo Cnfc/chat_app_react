@@ -8,7 +8,7 @@ const bot = {
   uid: "cleverbot",
   status: {
     lastChanged: new Date(),
-    stata: "online"
+    state: "online"
   },
   channels: {
     general: true
