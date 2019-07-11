@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { db, firebase } from "./firebase";
+import { db, firebase, setupPresence } from "./firebase";
 import { Router, Redirect } from "@reach/router";
 
 import Nav from "./Nav";
@@ -60,10 +60,13 @@ function useAuth() {
           photoUrl: firebaseUser.photoURL,
           uid: firebaseUser.uid
         };
+
         setUser(user);
+
         db.collection("users")
           .doc(user.uid)
           .set(user, { merge: true });
+        setupPresence(user);
       } else {
         setUser(null);
       }
