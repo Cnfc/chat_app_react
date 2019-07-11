@@ -223,6 +223,9 @@ body {
   text-align: center;
   margin-top: 100px;
 }
+.welcome_message {
+  padding: 50px;
+}
 
 .HiddenNav {
   display: none;

@@ -34,8 +34,15 @@ function Login() {
   };
   return (
     <div className="Login">
-      <h1>Chat</h1>
+      <h1>Chat App</h1>
       <button onClick={handleSignIn}>Sign in with Google</button>
+
+      <div className="welcome_message">
+        <p>
+          Это чат приложение. Для продолжения необходимо зарегестрироваться.
+          Выможите вести переписку в группе и видеть статус участников.
+        </p>
+      </div>
       {authError && (
         <div>
           <p>Sorry, there was a problem</p>
