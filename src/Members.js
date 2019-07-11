@@ -7,7 +7,6 @@ function Members({ channelId }) {
     "==",
     true
   ]);
-  console.log(members);
 
   return (
     <div className="Members">
