@@ -1,58 +1,39 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import useDocWithCache from "./useDocWithCache";
 import useCollection from "./useCollection";
 import formatDate from "date-fns/format";
 import isSameDay from "date-fns/is_same_day";
 
-function useChatScroll(ref) {
+function CharScroller(props) {
+  // Check when scoll to the last message
+  const ref = useRef();
+  const shouldScrollRef = useRef(true);
+
   useEffect(() => {
-    const node = ref.current;
-    node.scrollTop = node.scrollHeight;
+    if (shouldScrollRef.current) {
+      const node = ref.current;
+      node.scrollTop = node.scrollHeight;
+    }
   });
-}
 
-function shouldShowDay(previous, message) {
-  const isFirst = !previous;
-  if (isFirst) {
-    return true;
-  }
+  const handleScroll = () => {
+    const node = ref.current;
+    const { scrollTop, clientHeight, scrollHeight } = node;
+    const atBottom = scrollHeight === clientHeight + scrollTop;
+    shouldScrollRef.current = atBottom;
+  };
 
-  const isNewDay = !isSameDay(
-    previous.createdAt.seconds * 1000,
-    message.createdAt.seconds * 1000
-  );
-
-  return isNewDay;
-}
-
-function shouldShowAvatar(previous, message) {
-  const isFirst = !previous;
-  if (isFirst) {
-    return true;
-  }
-
-  const differentUser = message.user.id !== previous.user.id;
-  if (differentUser) {
-    return true;
-  }
-
-  // If longer than 3min Show new
-  const hasBeenAWhile =
-    message.createdAt.seconds - previous.createdAt.seconds > 180;
-
-  return hasBeenAWhile;
+  return <div {...props} ref={ref} onScroll={handleScroll} />;
 }
 
 function Messages({ channelId }) {
   const messages = useCollection(`channels/${channelId}/messages`, "createdAt");
 
-  // Scroll to the last message length
-  const scrollerRef = useRef();
-  useChatScroll(scrollerRef);
+  const [scrollTop, setScrollTop] = useState(0);
 
   return (
-    <div ref={scrollerRef} className="Messages">
+    <CharScroller className="Messages">
       <div className="EndOfMessages">That's every message!</div>
 
       {messages.map((message, index) => {
@@ -74,7 +55,7 @@ function Messages({ channelId }) {
           </div>
         );
       })}
-    </div>
+    </CharScroller>
   );
 }
 
@@ -109,5 +90,37 @@ function FirstMessageFromUser({ message, showDay }) {
       </div>
     </div>
   );
+}
+
+function shouldShowAvatar(previous, message) {
+  const isFirst = !previous;
+  if (isFirst) {
+    return true;
+  }
+
+  const differentUser = message.user.id !== previous.user.id;
+  if (differentUser) {
+    return true;
+  }
+
+  // If longer than 3min Show new
+  const hasBeenAWhile =
+    message.createdAt.seconds - previous.createdAt.seconds > 180;
+
+  return hasBeenAWhile;
+}
+
+function shouldShowDay(previous, message) {
+  const isFirst = !previous;
+  if (isFirst) {
+    return true;
+  }
+
+  const isNewDay = !isSameDay(
+    previous.createdAt.seconds * 1000,
+    message.createdAt.seconds * 1000
+  );
+
+  return isNewDay;
 }
 export default Messages;

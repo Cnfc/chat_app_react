@@ -1,6 +1,14 @@
 import React from "react";
+import useCollection from "./useCollection";
 
-function Members() {
+function Members({ channelId }) {
+  const members = useCollection("users", "displayName", [
+    `chanells.${channelId}`,
+    "==",
+    true
+  ]);
+  console.log(members);
+
   return (
     <div className="Members">
       <div>
