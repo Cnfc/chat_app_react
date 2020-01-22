@@ -6,3 +6,7 @@ Firebase db,
 - date with npm date-fns,
 - move to the last message scrollDown,
 - check online/offline RTDB => CFS => RTDB
+
+
+V1.
+V2 Im working on a new version 
